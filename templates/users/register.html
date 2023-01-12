@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+    Регистрация
+{% endblock %}
+{% block content %}
+{% load i18n %}
+<div class="registrations">
+    <form  method="post">
+        {% csrf_token %}
+        {{form.as_p}}
+    <div class="submit-block">
+        <div><button class="" type="submit">{% trans  "Регистрация" %}</button></div>
+        <div><a class="btn-authorization" href="{% url 'login' %}">{% trans  "Авторизоваться" %}</a></div>
+    </div>
+    </form>
+</div>
+{% endblock content %}
