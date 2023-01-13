@@ -1,8 +1,11 @@
 from random import randint
+
 from django.db.models import Count
 from django.shortcuts import render, redirect
 from django.views import generic
 from django.views.generic import FormView
+
+from app_cart.forms import CartAddProductForm
 from app_shop.forms import FilterForms, SortedForms, ReviewForms
 from app_shop.models import Product, Reviews
 
@@ -192,8 +195,8 @@ class ProductDetail(generic.DetailView, FormView):
 
     def get_context_data(self, **kwargs):
         context = super(ProductDetail, self).get_context_data()
-        # form_add_cart = CartAddProductForm()
-        # context['form_add_cart'] = form_add_cart
+        form_add_cart = CartAddProductForm()
+        context['form_add_cart'] = form_add_cart
         result = Reviews.objects.filter(review_product__id=self.kwargs['pk']).select_related('author')
         count_review = Product.objects.filter(id = self.kwargs['pk']).annotate(product_reviews=Count('product_review__id'))
         count_review = count_review[0].product_reviews
