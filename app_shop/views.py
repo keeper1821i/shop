@@ -6,6 +6,7 @@ from django.views import generic
 from django.views.generic import FormView
 
 from app_cart.forms import CartAddProductForm
+from app_history.models import ViewedProduct
 from app_shop.forms import FilterForms, SortedForms, ReviewForms
 from app_shop.models import Product, Reviews
 
@@ -202,6 +203,14 @@ class ProductDetail(generic.DetailView, FormView):
         count_review = count_review[0].product_reviews
         context['count_review'] = count_review
         context['result'] = result
+        if self.request.user.is_anonymous:
+            ViewedProduct.objects.create(
+                                         product_id=self.kwargs['pk'],
+                                         session=self.request.session.session_key)
+        else:
+            ViewedProduct.objects.create(user_id=self.request.user.id,
+                                         product_id=self.kwargs['pk'],
+                                         session=self.request.session.session_key)
         return context
 
     def get_success_url(self):
@@ -212,9 +221,8 @@ class ProductDetail(generic.DetailView, FormView):
     def form_valid(self, form):
         inst = Product.objects.filter(id=self.kwargs['pk'])
         body = form.cleaned_data.get('body')
-        print(body)
         print(self.request.user.id)
-        res = Reviews.objects.create(descriptions = body, author_id=self.request.user.id)
+        res = Reviews.objects.create(descriptions=body, author_id=self.request.user.id)
         res.review_product.set(inst)
         return super().form_valid(form)
 

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from app_shop.models import Category, Product, Subcategory
+from app_shop.models import Category, Product, Subcategory, Reviews
 
 
 @admin.register(Category)
@@ -19,3 +19,8 @@ class ProductAdmin(admin.ModelAdmin):
     list_filter = ['available', 'created', 'uploaded']
     list_editable = ['price', 'available']
     prepopulated_fields = {'slug': ('name', )}
+
+
+@admin.register(Reviews)
+class ReviewsAdmin(admin.ModelAdmin):
+    list_display = ['author', 'created', 'descriptions',]
